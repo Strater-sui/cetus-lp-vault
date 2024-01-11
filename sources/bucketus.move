@@ -19,7 +19,7 @@ module strater_lp_vault::bucketus {
     const TARGET_TICK: u32 = 4294898216; // -69080
     const TARGET_SQRT_PRICE: u128 = 583337266871351552; // price(y/x) = 0.001
     const USDC_NORMALIZER: u64 = 1_000;
-    const TARGET_CETUS_POOL_ID: address = @0xd4573bdd25c629127d54c5671d72a0754ef47767e6c01758d6dc651f57951e7d;
+    const TARGET_CETUS_POOL_ID: address = @0x6ecf6d01120f5f055f9a605b56fd661412a81ec7c8b035255e333c664a0c12e7;
 
     // --------- Errors ---------
 
@@ -63,7 +63,7 @@ module strater_lp_vault::bucketus {
             9,
             b"BUCKETUS",
             b"SCET-BUCK/USDC-0.25 LP",
-            b"Fungible LP token for BUCK/USDC (fee rate: 0.25%) full range",
+            b"Fungible LP token for BUCK/USDC (fee tier: 0.25) full range",
             option::some(url::new_unsafe_from_bytes(
                 b"https://vb6zxndns5przvi3gv7fgo7auzf4qqremta27t4cj2bfawnrmifq.arweave.net/qH2btG2XXxzVGzV-UzvgpkvIQiRkwa_Pgk6CUFmxYgs"),
             ),
@@ -140,7 +140,7 @@ module strater_lp_vault::bucketus {
             target_tick,
             TARGET_SQRT_PRICE,
             position_liquidity,
-            true,
+            false,
         );
         buck_amount + usdc_amount * USDC_NORMALIZER
     }
