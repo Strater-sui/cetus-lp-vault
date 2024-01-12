@@ -5,17 +5,18 @@ module strater_lp_vault::bucketus {
     use sui::coin::{Self, Coin, TreasuryCap};
     use sui::url;
     use sui::dynamic_field as df;
-    use sui::object::{Self, UID};
+    use sui::object::{Self, UID, ID};
     use sui::transfer;
     use sui::clock::Clock;
     use sui::balance::{Self, Balance};
+    use sui::event;
     use cetus_clmm::position::{Self, Position};
     use cetus_clmm::pool::{Self, Pool, AddLiquidityReceipt};
     use cetus_clmm::config::GlobalConfig;
     use integer_mate::i32::{Self, I32};
     use integer_mate::full_math_u128;
 
-    // --------- Errors ---------
+    // --------- Version ---------
 
     const PACKAGE_VERSION: u64 = 1;
 
@@ -55,6 +56,33 @@ module strater_lp_vault::bucketus {
         b_normalizer: u64,
         // status
         bucketus_supply: u64,
+    }
+
+    // --------- Events ---------
+
+    struct NewVault<phantom A, phantom B> has copy, drop {
+        vault_id: ID,
+        pool_id: ID,
+        tick_lower: u32,
+        tick_upper: u32,
+    }
+
+    struct CollectFee<phantom T> has copy, drop {
+        amount: u64,
+    }
+
+    struct Deposit<phantom A, phantom B> has copy, drop {
+        vault_id: ID,
+        amount_a: u64,
+        amount_b: u64,
+        bucketus_amount: u64,
+    }
+
+    struct Withdraw<phantom A, phantom B> has copy, drop {
+        vault_id: ID,
+        amount_a: u64,
+        amount_b: u64,
+        bucketus_amount: u64,
     }
 
     // --------- Constructor ---------
@@ -113,10 +141,19 @@ module strater_lp_vault::bucketus {
             b_normalizer,
             bucketus_supply: 0,
         };
+        let vault_id = object::id(&vault);
         transfer::share_object(vault);
+        
+        let pool_id = object::id(pool);
+        event::emit(NewVault<A,B> {
+            vault_id,
+            pool_id,
+            tick_lower,
+            tick_upper,
+        });
     }
 
-    public fun claim_profit<T>(
+    public fun claim_fee<T>(
         _: &BeneficiaryCap,
         treasury: &mut BucketusTreasury,
         amount: u64,
@@ -126,14 +163,14 @@ module strater_lp_vault::bucketus {
         coin::take(borrow_balance_mut<T>(treasury), amount, ctx)
     }
 
-    public fun claim_profit_to<T>(
+    public fun claim_fee_to<T>(
         cap: &BeneficiaryCap,
         treasury: &mut BucketusTreasury,
         amount: u64,
         recipient: address,
         ctx: &mut TxContext,
     ) {
-        let profit = claim_profit<T>(cap, treasury, amount, ctx);
+        let profit = claim_fee<T>(cap, treasury, amount, ctx);
         transfer::public_transfer(profit, recipient);
     }
 
@@ -166,6 +203,14 @@ module strater_lp_vault::bucketus {
             clock,
         );
         vault.bucketus_supply = vault.bucketus_supply + bucketus_amount;
+        let vault_id = object::id(vault);
+        let (amount_a, amount_b) = pool::add_liquidity_pay_amount(&receipt);
+        event::emit(Deposit<A,B> {
+            vault_id,
+            amount_a,
+            amount_b,
+            bucketus_amount,
+        });
         (bucketus_coin, receipt)
     }
 
@@ -186,8 +231,8 @@ module strater_lp_vault::bucketus {
             vault_position,
             true,
         );
-        balance::join(borrow_balance_mut<A>(treasury), fee_a);
-        balance::join(borrow_balance_mut<B>(treasury), fee_b);
+        collect_fee(treasury, fee_a);
+        collect_fee(treasury, fee_b);
 
         let bucketus_amount = coin::value(&bucketus_coin);
         let vault_supply = vault.bucketus_supply;
@@ -205,6 +250,13 @@ module strater_lp_vault::bucketus {
             clock,
         );
         burn(treasury, vault, bucketus_coin);
+        let vault_id = object::id(vault);
+        event::emit(Withdraw<A,B> {
+            vault_id,
+            amount_a: balance::value(&out_a),
+            amount_b: balance::value(&out_b),
+            bucketus_amount,
+        });
         (
             coin::from_balance(out_a, ctx),
             coin::from_balance(out_b, ctx),
@@ -243,6 +295,10 @@ module strater_lp_vault::bucketus {
 
     // --------- Internal Functions ---------
 
+    fun assert_valid_package_version(treasury: &BucketusTreasury) {
+        assert!(treasury.version == PACKAGE_VERSION, EInvalidPackageVersion);
+    }
+
     fun mint(
         treasury: &mut BucketusTreasury,
         vault: &mut CetusLpVault,
@@ -277,7 +333,12 @@ module strater_lp_vault::bucketus {
         df::borrow_mut<BalanceType<T>, Balance<T>>(id_mut, type)
     }
 
-    fun assert_valid_package_version(treasury: &BucketusTreasury) {
-        assert!(treasury.version == PACKAGE_VERSION, EInvalidPackageVersion);
+    fun collect_fee<T>(
+        treasury: &mut BucketusTreasury,
+        fee: Balance<T>,
+    ) {
+        let amount = balance::value(&fee);
+        balance::join(borrow_balance_mut<T>(treasury), fee);
+        event::emit(CollectFee<T> { amount });
     }
 }
