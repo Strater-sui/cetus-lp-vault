@@ -10,3 +10,31 @@ sui move build
 ```
 sui move test -i 1000000000
 ```
+
+### Public Objects
+Package ID
+```
+0x8d1aee27f8537c06d19c16641f27008caafc42affd2d2fb7adb96919470481ec
+```
+BucketusTreasury, initial_shared_version `61707529`
+```
+0x781d3060afe9f5427bb865088ab25c8d827ed2b0be71ab140ff9ab5a0d8c9466
+```
+CetusLpVault (BUCK/USDC 0.25% full-range), initial_shared_version `61717741`
+```
+0x1a0b93fd2965ce3ceb4039c90b232ddee7b0e79015cab0ca10528bb5f4285188
+```
+
+### Owned Objects
+AdminCap
+```
+0x9dd1b5db48483cdcc145dc57259c406d9a8f907404bd97e866501cebb91285d0
+```
+UpgradeCap
+```
+0x544a654cc702bb3561442006c08ae904d9beb07c6e9eb273ff1ca39e1d430d7b
+```
+BeneficiaryCap
+```
+0xff179d49097e697763be55400ad74c4176f847b4050f1ce1c5d6e26158b21421
+```
