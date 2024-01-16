@@ -24,6 +24,7 @@ module strater_lp_vault::bucketus {
 
     const EInvalidPackageVersion: u64 = 0;
     const EVaultLiquidityNotEnough: u64 = 1;
+    const EInvalidTickRange: u64 = 2;
 
     // --------- OTW ---------
     
@@ -86,7 +87,7 @@ module strater_lp_vault::bucketus {
     }
 
     // --------- Constructor ---------
-    
+    #[allow(unused_function)]
     fun init(otw: BUCKETUS, ctx: &mut TxContext) {
         let (treasury_cap, metadata) = coin::create_currency(
             otw,
@@ -117,6 +118,7 @@ module strater_lp_vault::bucketus {
 
     public fun create_vault<A, B>(
         _: &AdminCap,
+        treasury: &BucketusTreasury,
         config: &GlobalConfig,
         pool: &mut Pool<A, B>,
         tick_lower: u32,
@@ -128,6 +130,11 @@ module strater_lp_vault::bucketus {
         b_normalizer: u64,
         ctx: &mut TxContext,
     ) {
+        assert_valid_package_version(treasury); // BUC-4
+        assert!(i32::gt(
+            i32::from_u32(tick_upper),
+            i32::from_u32(tick_lower),
+        ), EInvalidTickRange); // BUC-3
         let position = pool::open_position<A,B>(
             config, pool, tick_lower, tick_upper, ctx,
         );
@@ -170,14 +177,17 @@ module strater_lp_vault::bucketus {
         recipient: address,
         ctx: &mut TxContext,
     ) {
+        assert_valid_package_version(treasury);
         let profit = claim_fee<T>(cap, treasury, amount, ctx);
         transfer::public_transfer(profit, recipient);
     }
 
     public fun update_version(
+        _: &AdminCap, // BUC-1
         treasury: &mut BucketusTreasury,
         new_version: u64,
     ) {
+        assert_valid_package_version(treasury);
         treasury.version = new_version;
     }
 
@@ -202,7 +212,7 @@ module strater_lp_vault::bucketus {
             delta_liquidity,
             clock,
         );
-        vault.bucketus_supply = vault.bucketus_supply + bucketus_amount;
+        // vault.bucketus_supply = vault.bucketus_supply + bucketus_amount; // BUC-2
         let vault_id = object::id(vault);
         let (amount_a, amount_b) = pool::add_liquidity_pay_amount(&receipt);
         event::emit(Deposit<A,B> {
