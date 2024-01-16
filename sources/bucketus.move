@@ -50,7 +50,6 @@ module strater_lp_vault::bucketus {
         id: UID,
         // settings
         position: Position,
-        unit_liquidity: u64,
         target_tick: I32,
         target_sqrt_price: u128,
         a_normalizer: u64,
@@ -123,7 +122,6 @@ module strater_lp_vault::bucketus {
         pool: &mut Pool<A, B>,
         tick_lower: u32,
         tick_upper: u32,
-        unit_liquidity: u64,
         target_tick: u32,
         target_sqrt_price: u128,
         a_normalizer: u64,
@@ -141,8 +139,7 @@ module strater_lp_vault::bucketus {
         let vault = CetusLpVault {
             id: object::new(ctx),
             position,
-            unit_liquidity,
-            target_tick: i32::from(target_tick),
+            target_tick: i32::from_u32(target_tick),
             target_sqrt_price,
             a_normalizer,
             b_normalizer,
@@ -350,5 +347,14 @@ module strater_lp_vault::bucketus {
         let amount = balance::value(&fee);
         balance::join(borrow_balance_mut<T>(treasury), fee);
         event::emit(CollectFee<T> { amount });
+    }
+
+    // --------- Test-only Functions ---------
+    #[test_only]
+    use sui::test_utils::create_one_time_witness;
+    
+    #[test_only]
+    public fun init_for_testing(ctx: &mut TxContext) {
+        init(create_one_time_witness<BUCKETUS>(), ctx);
     }
 }
