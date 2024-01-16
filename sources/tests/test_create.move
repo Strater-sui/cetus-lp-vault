@@ -15,9 +15,9 @@ module strater_lp_vault::test_create {
         // BeneficiaryCap,
     };
 
-    struct CoinA has drop {}
+    struct BUCK has drop {}
 
-    struct CoinB has drop {}
+    struct USDC has drop {}
 
     public fun setup_lp_vault(
         admin: address,
@@ -44,7 +44,7 @@ module strater_lp_vault::test_create {
                 0,
             );
             transfer::public_transfer(cetus_cap, admin);
-            let cetus_pool = pool::new_for_test<CoinA, CoinB>(
+            let cetus_pool = pool::new_for_test<BUCK, USDC>(
                 60,
                 583337266871351552,
                 2_500,
@@ -56,7 +56,7 @@ module strater_lp_vault::test_create {
 
             let admin_cap = ts::take_from_sender<AdminCap>(scenario);
             let treasury = ts::take_shared<BucketusTreasury>(scenario);
-            bucketus::create_vault<CoinA, CoinB>(
+            bucketus::create_vault<BUCK, USDC>(
                 &admin_cap,
                 &treasury,
                 &cetus_config,
