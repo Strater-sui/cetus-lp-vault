@@ -179,6 +179,15 @@ module strater_lp_vault::bucketus {
         transfer::public_transfer(profit, recipient);
     }
 
+    public fun claim_all<T>(
+        _: &BeneficiaryCap,
+        treasury: &mut BucketusTreasury,
+        ctx: &mut TxContext,
+    ): Balance<T> {
+        assert_valid_package_version(treasury);
+        balance::withdraw_all(borrow_balance_mut<T>(treasury))
+    }
+
     public fun update_version(
         _: &AdminCap, // BUC-1
         treasury: &mut BucketusTreasury,
