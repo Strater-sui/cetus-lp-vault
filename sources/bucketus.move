@@ -182,7 +182,6 @@ module strater_lp_vault::bucketus {
     public fun claim_all<T>(
         _: &BeneficiaryCap,
         treasury: &mut BucketusTreasury,
-        ctx: &mut TxContext,
     ): Balance<T> {
         assert_valid_package_version(treasury);
         balance::withdraw_all(borrow_balance_mut<T>(treasury))
