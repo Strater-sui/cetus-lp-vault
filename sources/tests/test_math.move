@@ -48,8 +48,8 @@ module strater_lp_vault::test_math {
         liquidity: u128,
         current_sqrt_price: u128,
     ): u64 {
-        let tick_lower = i32::from_u32(4294523660);
-        let tick_upper = i32::from_u32(443636);
+        let tick_lower = i32::from_u32(4294523716);
+        let tick_upper = i32::from_u32(443580);
         let current_tick = i32::from_u32(4294898216);
         let (amount_a, amount_b) = get_amount_by_liquidity(
             tick_lower, tick_upper, current_tick, current_sqrt_price, liquidity, false,
