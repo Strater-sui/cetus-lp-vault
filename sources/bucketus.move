@@ -13,6 +13,7 @@ module strater_lp_vault::bucketus {
     use cetus_clmm::position::{Self, Position};
     use cetus_clmm::pool::{Self, Pool, AddLiquidityReceipt};
     use cetus_clmm::config::GlobalConfig;
+    use cetus_clmm::rewarder::RewarderGlobalVault;
     use integer_mate::i32::{Self, I32};
     use integer_mate::full_math_u128;
 
@@ -185,6 +186,42 @@ module strater_lp_vault::bucketus {
     ): Balance<T> {
         assert_valid_package_version(treasury);
         balance::withdraw_all(borrow_balance_mut<T>(treasury))
+    }
+
+    public fun claim_reward<A, B, C>(
+        _: &BeneficiaryCap,
+        vault: &CetusLpVault,
+        cetus_config: &GlobalConfig,
+        cetus_pool: &mut Pool<A, B>,
+        cetus_vault: &mut RewarderGlobalVault,
+        clock: &Clock,
+    ): Balance<C> {
+        let cetus_position = &vault.position;
+        cetus_clmm::pool::collect_reward(
+            cetus_config,
+            cetus_pool,
+            cetus_position,
+            cetus_vault,
+            true,
+            clock,
+        )
+    }
+
+    public fun claim_reward_to<A, B, C>(
+        cap: &BeneficiaryCap,
+        vault: &CetusLpVault,
+        cetus_config: &GlobalConfig,
+        cetus_pool: &mut Pool<A, B>,
+        cetus_vault: &mut RewarderGlobalVault,
+        clock: &Clock,
+        recipient: address,
+        ctx: &mut TxContext,
+    ) {
+        let reward = claim_reward<A, B, C>(
+            cap, vault, cetus_config, cetus_pool, cetus_vault, clock,
+        );
+        let reward = coin::from_balance(reward, ctx);
+        transfer::public_transfer(reward, recipient);
     }
 
     public fun update_version(
