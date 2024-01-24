@@ -68,7 +68,13 @@ module strater_lp_vault::bucketus {
         tick_upper: u32,
     }
 
+    // deprecated
     struct CollectFee<phantom T> has copy, drop {
+        amount: u64,
+    }
+
+    struct CollectFeeFrom<phantom T> has copy, drop {
+        pool_id: ID,
         amount: u64,
     }
 
@@ -283,8 +289,9 @@ module strater_lp_vault::bucketus {
             vault_position,
             true,
         );
-        collect_fee(treasury, fee_a);
-        collect_fee(treasury, fee_b);
+        let pool_id = object::id(pool);
+        collect_fee(treasury, pool_id, fee_a);
+        collect_fee(treasury, pool_id, fee_b);
 
         let bucketus_amount = coin::value(&bucketus_coin);
         let vault_supply = vault.bucketus_supply;
@@ -387,11 +394,12 @@ module strater_lp_vault::bucketus {
 
     fun collect_fee<T>(
         treasury: &mut BucketusTreasury,
+        pool_id: ID,
         fee: Balance<T>,
     ) {
         let amount = balance::value(&fee);
         balance::join(borrow_balance_mut<T>(treasury), fee);
-        event::emit(CollectFee<T> { amount });
+        event::emit(CollectFeeFrom<T> { pool_id, amount });
     }
 
     // --------- Test-only Functions ---------
