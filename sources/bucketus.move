@@ -69,6 +69,7 @@ module strater_lp_vault::bucketus {
     }
 
     // deprecated
+    #[allow(unused_field)]
     struct CollectFee<phantom T> has copy, drop {
         amount: u64,
     }
