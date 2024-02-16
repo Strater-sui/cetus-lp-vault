@@ -1,4 +1,4 @@
-module strater_lp_vault::bucketus {
+module strater_lp_vault::cetable {
 
     use std::option;
     use sui::tx_context::{Self, TxContext};
@@ -29,7 +29,7 @@ module strater_lp_vault::bucketus {
 
     // --------- OTW ---------
     
-    struct BUCKETUS has drop {}
+    struct CETABLE has drop {}
 
     // --------- Objects ---------
 
@@ -41,10 +41,10 @@ module strater_lp_vault::bucketus {
         id: UID,
     }
 
-    struct BucketusTreasury has key {
+    struct CetableTreasury has key {
         id: UID,
         version: u64,
-        cap: TreasuryCap<BUCKETUS>,
+        cap: TreasuryCap<CETABLE>,
     }
 
     struct CetusLpVault has key, store {
@@ -56,7 +56,7 @@ module strater_lp_vault::bucketus {
         a_normalizer: u64,
         b_normalizer: u64,
         // status
-        bucketus_supply: u64,
+        cetable_supply: u64,
     }
 
     // --------- Events ---------
@@ -83,31 +83,31 @@ module strater_lp_vault::bucketus {
         vault_id: ID,
         amount_a: u64,
         amount_b: u64,
-        bucketus_amount: u64,
+        cetable_amount: u64,
     }
 
     struct Withdraw<phantom A, phantom B> has copy, drop {
         vault_id: ID,
         amount_a: u64,
         amount_b: u64,
-        bucketus_amount: u64,
+        cetable_amount: u64,
     }
 
     // --------- Constructor ---------
     #[allow(unused_function)]
-    fun init(otw: BUCKETUS, ctx: &mut TxContext) {
+    fun init(otw: CETABLE, ctx: &mut TxContext) {
         let (treasury_cap, metadata) = coin::create_currency(
             otw,
             9,
-            b"BUCKETUS",
+            b"CETABLE",
             b"SCET-STABLE-LP",
             b"Fungible LP token for stable pair on Cetus",
             option::some(url::new_unsafe_from_bytes(
-                b"https://vb6zxndns5przvi3gv7fgo7auzf4qqremta27t4cj2bfawnrmifq.arweave.net/qH2btG2XXxzVGzV-UzvgpkvIQiRkwa_Pgk6CUFmxYgs"),
+                b"https://reb6vnedll4q6tlu63cmk7iu3y252525bgh3zf7tq5onis572pfq.arweave.net/iQPqtINa-Q9NdPbExX0U3jXdd10Jj7yX84dc1Eu_08s"),
             ),
             ctx,
         );
-        let vault = BucketusTreasury {
+        let vault = CetableTreasury {
             id: object::new(ctx),
             version: PACKAGE_VERSION,
             cap: treasury_cap,
@@ -125,7 +125,7 @@ module strater_lp_vault::bucketus {
 
     public fun create_vault<A, B>(
         _: &AdminCap,
-        treasury: &BucketusTreasury,
+        treasury: &CetableTreasury,
         config: &GlobalConfig,
         pool: &mut Pool<A, B>,
         tick_lower: u32,
@@ -151,7 +151,7 @@ module strater_lp_vault::bucketus {
             target_sqrt_price,
             a_normalizer,
             b_normalizer,
-            bucketus_supply: 0,
+            cetable_supply: 0,
         };
         let vault_id = object::id(&vault);
         transfer::share_object(vault);
@@ -167,7 +167,7 @@ module strater_lp_vault::bucketus {
 
     public fun claim_fee<T>(
         _: &BeneficiaryCap,
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
         amount: u64,
         ctx: &mut TxContext,
     ): Coin<T> {
@@ -177,7 +177,7 @@ module strater_lp_vault::bucketus {
 
     public fun claim_fee_to<T>(
         cap: &BeneficiaryCap,
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
         amount: u64,
         recipient: address,
         ctx: &mut TxContext,
@@ -189,7 +189,7 @@ module strater_lp_vault::bucketus {
 
     public fun claim_all<T>(
         _: &BeneficiaryCap,
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
     ): Balance<T> {
         assert_valid_package_version(treasury);
         balance::withdraw_all(borrow_balance_mut<T>(treasury))
@@ -233,7 +233,7 @@ module strater_lp_vault::bucketus {
 
     public fun update_version(
         _: &AdminCap, // BUC-1
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
         new_version: u64,
     ) {
         assert_valid_package_version(treasury);
@@ -243,17 +243,17 @@ module strater_lp_vault::bucketus {
     // --------- Public Function ---------
 
     public fun deposit<A, B>(
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
         vault: &mut CetusLpVault,
         config: &GlobalConfig,
         pool: &mut Pool<A, B>,
         delta_liquidity: u128,
         clock: &Clock,
         ctx: &mut TxContext,
-    ): (Coin<BUCKETUS>, AddLiquidityReceipt<A, B>) {
+    ): (Coin<CETABLE>, AddLiquidityReceipt<A, B>) {
         assert_valid_package_version(treasury);
-        let bucketus_amount = liquidity_to_bucketus_amount(vault, delta_liquidity);
-        let bucketus_coin = mint(treasury, vault, bucketus_amount, ctx);
+        let cetable_amount = liquidity_to_cetable_amount(vault, delta_liquidity);
+        let cetable_coin = mint(treasury, vault, cetable_amount, ctx);
         let receipt = pool::add_liquidity<A, B>(
             config,
             pool,
@@ -261,25 +261,25 @@ module strater_lp_vault::bucketus {
             delta_liquidity,
             clock,
         );
-        // vault.bucketus_supply = vault.bucketus_supply + bucketus_amount; // BUC-2
+        // vault.cetable_supply = vault.cetable_supply + cetable_amount; // BUC-2
         let vault_id = object::id(vault);
         let (amount_a, amount_b) = pool::add_liquidity_pay_amount(&receipt);
         event::emit(Deposit<A,B> {
             vault_id,
             amount_a,
             amount_b,
-            bucketus_amount,
+            cetable_amount,
         });
-        (bucketus_coin, receipt)
+        (cetable_coin, receipt)
     }
 
     public fun withdraw<A, B>(
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
         vault: &mut CetusLpVault,
         config: &GlobalConfig,
         pool: &mut Pool<A, B>,
         clock: &Clock,
-        bucketus_coin: Coin<BUCKETUS>,
+        cetable_coin: Coin<CETABLE>,
         ctx: &mut TxContext,
     ): (Coin<A>, Coin<B>) {
         assert_valid_package_version(treasury);
@@ -294,12 +294,12 @@ module strater_lp_vault::bucketus {
         collect_fee(treasury, pool_id, fee_a);
         collect_fee(treasury, pool_id, fee_b);
 
-        let bucketus_amount = coin::value(&bucketus_coin);
-        let vault_supply = vault.bucketus_supply;
+        let cetable_amount = coin::value(&cetable_coin);
+        let vault_supply = vault.cetable_supply;
         let vault_liquidity = position::liquidity(vault_position);
         let delta_liquidity = full_math_u128::mul_div_floor(
             vault_liquidity,
-            (bucketus_amount as u128),
+            (cetable_amount as u128),
             (vault_supply as u128),
         );
         let (out_a, out_b) = pool::remove_liquidity(
@@ -309,13 +309,13 @@ module strater_lp_vault::bucketus {
             delta_liquidity,
             clock,
         );
-        burn(treasury, vault, bucketus_coin);
+        burn(treasury, vault, cetable_coin);
         let vault_id = object::id(vault);
         event::emit(Withdraw<A,B> {
             vault_id,
             amount_a: balance::value(&out_a),
             amount_b: balance::value(&out_b),
-            bucketus_amount,
+            cetable_amount,
         });
         (
             coin::from_balance(out_a, ctx),
@@ -329,15 +329,15 @@ module strater_lp_vault::bucketus {
         &vault.position
     }
 
-    public fun borrow_treasury_cap(treasury: &BucketusTreasury): &TreasuryCap<BUCKETUS> {
+    public fun borrow_treasury_cap(treasury: &CetableTreasury): &TreasuryCap<CETABLE> {
         &treasury.cap
     }
 
     public fun vault_supply(vault: &CetusLpVault): u64 {
-        vault.bucketus_supply
+        vault.cetable_supply
     }
 
-    public fun liquidity_to_bucketus_amount(
+    public fun liquidity_to_cetable_amount(
         vault: &CetusLpVault,
         delta_liquidity: u128,
     ): u64 {
@@ -355,35 +355,35 @@ module strater_lp_vault::bucketus {
 
     // --------- Internal Functions ---------
 
-    fun assert_valid_package_version(treasury: &BucketusTreasury) {
+    fun assert_valid_package_version(treasury: &CetableTreasury) {
         assert!(treasury.version == PACKAGE_VERSION, EInvalidPackageVersion);
     }
 
     fun mint(
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
         vault: &mut CetusLpVault,
         amount: u64,
         ctx: &mut TxContext,
-    ): Coin<BUCKETUS> {
-        vault.bucketus_supply = vault.bucketus_supply + amount;
+    ): Coin<CETABLE> {
+        vault.cetable_supply = vault.cetable_supply + amount;
         coin::mint(&mut treasury.cap, amount, ctx)
     }
 
     fun burn(
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
         vault: &mut CetusLpVault,
-        coin: Coin<BUCKETUS>,
+        coin: Coin<CETABLE>,
     ) {
         let coin_value = coin::value(&coin);
-        assert!(coin_value <= vault.bucketus_supply, EVaultLiquidityNotEnough);
-        vault.bucketus_supply = vault.bucketus_supply - coin_value;
+        assert!(coin_value <= vault.cetable_supply, EVaultLiquidityNotEnough);
+        vault.cetable_supply = vault.cetable_supply - coin_value;
         coin::burn(&mut treasury.cap, coin);
     }
 
     struct BalanceType<phantom T> has copy, drop, store {}
 
     fun borrow_balance_mut<T>(
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
     ): &mut Balance<T> {
         let type = BalanceType<T> {};
         let id_mut = &mut treasury.id;
@@ -394,7 +394,7 @@ module strater_lp_vault::bucketus {
     }
 
     fun collect_fee<T>(
-        treasury: &mut BucketusTreasury,
+        treasury: &mut CetableTreasury,
         pool_id: ID,
         fee: Balance<T>,
     ) {
@@ -409,6 +409,6 @@ module strater_lp_vault::bucketus {
     
     #[test_only]
     public fun init_for_testing(ctx: &mut TxContext) {
-        init(create_one_time_witness<BUCKETUS>(), ctx);
+        init(create_one_time_witness<CETABLE>(), ctx);
     }
 }

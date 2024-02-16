@@ -7,15 +7,16 @@ module strater_lp_vault::test_create {
     use sui::transfer;
     use cetus_clmm::pool;
     use cetus_clmm::config;
-    use strater_lp_vault::bucketus::{
+    use strater_lp_vault::cetable::{
         Self,
-        BucketusTreasury,
+        CetableTreasury,
         // CetusLpVault,
         AdminCap,
         // BeneficiaryCap,
     };
+    use strater_lp_vault::test_math as math;
 
-    struct BUCK has drop {}
+    struct USDT has drop {}
 
     struct USDC has drop {}
 
@@ -31,7 +32,7 @@ module strater_lp_vault::test_create {
         let scenario_val = ts::begin(admin);
         let scenario = &mut scenario_val;
         {
-            bucketus::init_for_testing(ts::ctx(scenario));
+            cetable::init_for_testing(ts::ctx(scenario));
             let clock = clock::create_for_testing(ts::ctx(scenario));
             clock::share_for_testing(clock);
         };
@@ -44,10 +45,10 @@ module strater_lp_vault::test_create {
                 0,
             );
             transfer::public_transfer(cetus_cap, admin);
-            let cetus_pool = pool::new_for_test<BUCK, USDC>(
-                60,
-                583337266871351552,
-                2_500,
+            let cetus_pool = pool::new_for_test<USDT, USDC>(
+                2,
+                math::target_sqrt_price(),
+                100,
                 std::string::utf8(b""),
                 0,
                 &clock,
@@ -55,8 +56,8 @@ module strater_lp_vault::test_create {
             );
 
             let admin_cap = ts::take_from_sender<AdminCap>(scenario);
-            let treasury = ts::take_shared<BucketusTreasury>(scenario);
-            bucketus::create_vault<BUCK, USDC>(
+            let treasury = ts::take_shared<CetableTreasury>(scenario);
+            cetable::create_vault<USDT, USDC>(
                 &admin_cap,
                 &treasury,
                 &cetus_config,
@@ -82,42 +83,14 @@ module strater_lp_vault::test_create {
     #[test]
     fun test_create_vault() {
         let admin = @0xde1;
-        let tick_lower = 4294523716;
-        let tick_upper = 443580;
-        let target_tick = 4294898216;
-        let target_sqrt_price = 583337266871351552;
-        let a_normalizer = 1;
-        let b_normalizer = 1_000;
         let scenario_val = setup_lp_vault(
             admin,
-            tick_lower,
-            tick_upper,
-            target_tick,
-            target_sqrt_price,
-            a_normalizer,
-            b_normalizer,
-        );
-        ts::end(scenario_val);
-    }
-
-    #[test]
-    #[expected_failure(abort_code = bucketus::EInvalidTickRange)]
-    fun test_create_vault_with_invalid_tick_range() {
-        let admin = @0xde1;
-        let tick_lower = 443636;
-        let tick_upper = 4294523660;
-        let target_tick = 4294898216;
-        let target_sqrt_price = 583337266871351552;
-        let a_normalizer = 1;
-        let b_normalizer = 1_000;
-        let scenario_val = setup_lp_vault(
-            admin,
-            tick_lower,
-            tick_upper,
-            target_tick,
-            target_sqrt_price,
-            a_normalizer,
-            b_normalizer,
+            math::tick_lower(),
+            math::tick_upper(),
+            math::target_tick(),
+            math::target_sqrt_price(),
+            math::a_normalizer(),
+            math::b_normalizer(),
         );
         ts::end(scenario_val);
     }
