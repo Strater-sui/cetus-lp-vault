@@ -7,8 +7,8 @@ module strater_lp_vault::test_math {
     // --------- Constants ---------
 
     const UNIT_LIQUIDITY: u128 = 2500377417; // this liquidity -> mint 1 CETABLE
-    const TICK_UPPER: u32 = 10; // +10
     const TICK_LOWER: u32 = 2; // +2
+    const TICK_UPPER: u32 = 10; // +10
     const TARGET_TICK: u32 = 6; // +6
     const TARGET_SQRT_PRICE: u128 = 18452277267077120000; // price(y/x) = 1.0006
     const A_NORMALIZER: u64 = 1;
