@@ -11,9 +11,13 @@ CetableTreasury, `69064540`
 ```
 0x84e0d6144633efd5bdd3f648cdd5e7fc1cb3e2a66ecc82a5d3848d567156bb3f
 ```
-CetusLpVault (USDT/USDC), `69099790`
+CetusLpVault (USDT/USDC, 2~10), `69099790`
 ```
 0x37b56981209c1619632a246e7de2184313c682205f1d7b24b39cc80b2daed25e
+```
+CetusLpVault (USDT/USDC, 2~8), `69169702`
+```
+0xeed4e7948f88f1f044b653717a7855eef6fe188e9cbbb103d5169f9bc3edd257
 ```
 
 ### Owned Objects

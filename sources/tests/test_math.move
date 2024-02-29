@@ -6,11 +6,11 @@ module strater_lp_vault::test_math {
 
     // --------- Constants ---------
 
-    const UNIT_LIQUIDITY: u128 = 2500377417; // this liquidity -> mint 1 CETABLE
+    const UNIT_LIQUIDITY: u128 = 3333752664; // this liquidity -> mint 1 CETABLE
     const TICK_LOWER: u32 = 2; // +2
-    const TICK_UPPER: u32 = 10; // +10
-    const TARGET_TICK: u32 = 6; // +6
-    const TARGET_SQRT_PRICE: u128 = 18452277267077120000; // price(y/x) = 1.0006
+    const TICK_UPPER: u32 = 8; // +8
+    const TARGET_TICK: u32 = 5; // +5
+    const TARGET_SQRT_PRICE: u128 = 18451355183411298304; // price(y/x) = 1.0005
     const A_NORMALIZER: u64 = 1;
     const B_NORMALIZER: u64 = 1;
 
@@ -20,7 +20,7 @@ module strater_lp_vault::test_math {
         let target_sqrt_price = TARGET_SQRT_PRICE;
         let target_value = compute_value(liquidity, target_sqrt_price);
         std::debug::print(&target_value);
-        let double_target_value = compute_value(liquidity * 2, target_sqrt_price);
+        let double_target_value = compute_value(liquidity * 10, target_sqrt_price);
         std::debug::print(&double_target_value);
         // assert!(double_target_value == 2 * target_value, 0);
         let idx = 0;
@@ -37,7 +37,7 @@ module strater_lp_vault::test_math {
         while (idx < 1_000) {
             current_sqrt_price = current_sqrt_price * 10000 / 10001;
             let current_value = compute_value(liquidity, current_sqrt_price);
-            std::debug::print(&current_value);
+            // std::debug::print(&current_value);
             // assert!(current_value >= target_value, 0);
             idx = idx + 1;
         };
