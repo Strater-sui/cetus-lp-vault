@@ -20,13 +20,17 @@ BucketusTreasury, initial_shared_version `61707529`
 ```
 0x781d3060afe9f5427bb865088ab25c8d827ed2b0be71ab140ff9ab5a0d8c9466
 ```
-CetusLpVault (BUCK/USDC 0.25% full-range), initial_shared_version `61717741`
-```
-0x1a0b93fd2965ce3ceb4039c90b232ddee7b0e79015cab0ca10528bb5f4285188
-```
 CetusLpVault (BUCK/USDC 0.01% full-range), initial_shared_version `63666426`
 ```
 0x504799d041ea541d252b4742ba9388ff602a9e91b23ccb239d4abc499761f42f
+```
+CetusLpVault (BUCK/USDC 0.05% full-range), initial_shared_version `75359688`
+```
+0x6edfc992f6e775fe926a5e850661c151ad01e6149e9b34792a2102e1721065fc
+```
+CetusLpVault (BUCK/USDC 0.25% full-range), initial_shared_version `61717741`
+```
+0x1a0b93fd2965ce3ceb4039c90b232ddee7b0e79015cab0ca10528bb5f4285188
 ```
 
 ### Owned Objects
