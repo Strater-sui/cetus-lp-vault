@@ -231,6 +231,23 @@ module strater_lp_vault::bucketus {
         transfer::public_transfer(reward, recipient);
     }
 
+    public fun collect_fee_to_treasury<A, B>(
+        treasury: &mut BucketusTreasury,
+        vault: &CetusLpVault,
+        config: &GlobalConfig,
+        pool: &mut Pool<A, B>,
+    ) {
+        let (fee_a, fee_b) = pool::collect_fee(
+            config,
+            pool,
+            &vault.position,
+            true,
+        );
+        let pool_id = object::id(pool);
+        collect_fee(treasury, pool_id, fee_a);
+        collect_fee(treasury, pool_id, fee_b);
+    }
+
     public fun update_version(
         _: &AdminCap, // BUC-1
         treasury: &mut BucketusTreasury,
@@ -283,19 +300,11 @@ module strater_lp_vault::bucketus {
         ctx: &mut TxContext,
     ): (Coin<A>, Coin<B>) {
         assert_valid_package_version(treasury);
-        let vault_position = &mut vault.position;
-        let (fee_a, fee_b) = pool::collect_fee(
-            config,
-            pool,
-            vault_position,
-            true,
-        );
-        let pool_id = object::id(pool);
-        collect_fee(treasury, pool_id, fee_a);
-        collect_fee(treasury, pool_id, fee_b);
+        collect_fee_to_treasury(treasury, vault, config, pool);
 
         let bucketus_amount = coin::value(&bucketus_coin);
         let vault_supply = vault.bucketus_supply;
+        let vault_position = &mut vault.position;
         let vault_liquidity = position::liquidity(vault_position);
         let delta_liquidity = full_math_u128::mul_div_floor(
             vault_liquidity,
