@@ -1,13 +1,14 @@
 [package]
 name = "StraterLpVault"
-version = "0.0.2"
+version = "0.0.4"
 # published-at = "0x8d1aee27f8537c06d19c16641f27008caafc42affd2d2fb7adb96919470481ec"
 # published-at = "0x8da48ef1e49dcb81631ce468df5c273d2f8eb5770af4d27ec2f1049bc8a61f75"
-published-at = "0xd934113042a4814fa6628d6fe2217da095ea9611a00b5e0fc820824d2267c129"
+# published-at = "0xd934113042a4814fa6628d6fe2217da095ea9611a00b5e0fc820824d2267c129"
+published-at = "0xcb86c35bee98f6cfca7b5085b9b68cce029d5f9810623542b996413842d040f3"
 
 [dependencies]
-Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet" }
-CetusClmm = { local = "./cetus-clmm/clmmpool" }
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "mainnet-v1.23.1" }
+CetusClmm = { git = "https://github.com/CetusProtocol/cetus-clmm-interface.git", subdir = "sui/clmmpool/", rev = "mainnet" }
 
 [addresses]
 strater_lp_vault = "0x0"

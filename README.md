@@ -14,7 +14,7 @@ sui move test -i 1000000000
 ### Public Objects
 Package ID
 ```
-0xd934113042a4814fa6628d6fe2217da095ea9611a00b5e0fc820824d2267c129
+0xcb86c35bee98f6cfca7b5085b9b68cce029d5f9810623542b996413842d040f3
 ```
 BucketusTreasury, initial_shared_version `61707529`
 ```
