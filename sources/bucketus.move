@@ -68,6 +68,10 @@ module strater_lp_vault::bucketus {
         tick_upper: u32,
     }
 
+    struct ClaimEvent<phantom T> has copy, drop {
+        amount: u64,
+    }
+
     // deprecated
     #[allow(unused_field)]
     struct CollectFee<phantom T> has copy, drop {
@@ -172,7 +176,9 @@ module strater_lp_vault::bucketus {
         ctx: &mut TxContext,
     ): Coin<T> {
         assert_valid_package_version(treasury);
-        coin::take(borrow_balance_mut<T>(treasury), amount, ctx)
+        let fee = coin::take(borrow_balance_mut<T>(treasury), amount, ctx);
+        emit_claim_event(coin::balance(&fee));
+        fee
     }
 
     public fun claim_fee_to<T>(
@@ -204,14 +210,16 @@ module strater_lp_vault::bucketus {
         clock: &Clock,
     ): Balance<C> {
         let cetus_position = &vault.position;
-        cetus_clmm::pool::collect_reward(
+        let reward = cetus_clmm::pool::collect_reward(
             cetus_config,
             cetus_pool,
             cetus_position,
             cetus_vault,
             true,
             clock,
-        )
+        );
+        emit_claim_event(&reward);
+        reward
     }
 
     public fun claim_reward_to<A, B, C>(
@@ -410,6 +418,11 @@ module strater_lp_vault::bucketus {
         let amount = balance::value(&fee);
         balance::join(borrow_balance_mut<T>(treasury), fee);
         event::emit(CollectFeeFrom<T> { pool_id, amount });
+    }
+
+    fun emit_claim_event<T>(balance: &Balance<T>) {
+        let amount = balance::value(balance);
+        if (amount > 0) event::emit(ClaimEvent<T> { amount });
     }
 
     // --------- Test-only Functions ---------
