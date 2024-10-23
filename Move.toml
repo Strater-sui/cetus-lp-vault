@@ -6,12 +6,15 @@ version = "0.0.6"
 # published-at = "0xd934113042a4814fa6628d6fe2217da095ea9611a00b5e0fc820824d2267c129"
 # published-at = "0xcb86c35bee98f6cfca7b5085b9b68cce029d5f9810623542b996413842d040f3"
 # published-at = "0x70ec4e374f535d740a6f2f549a2557a20846a3feebc4684313329e2bd1016f33"
-published-at = "0xc1da3fa69467f2fc6830b3a77ad83524dfc7bda67e9ded80b4007c736aca79a1"
+# published-at = "0xc1da3fa69467f2fc6830b3a77ad83524dfc7bda67e9ded80b4007c736aca79a1"
+# published-at = "0x8ba10ffa8a7d841247f475b63e456cf508ab32c0c0fe2f4817e6721bf932f8de"
+# published-at = "0x05f90d8547e9db0da98a52d2e6e54b3798c89d42cfe785ebcd1abf6c97d137c3"
+published-at = "0xd8796ceff421e530bcfcca93867facd424bc10ea6abaa03fe6d9edf69ee5aeae"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "mainnet-v1.23.1" }
 CetusClmm = { git = "https://github.com/CetusProtocol/cetus-clmm-interface.git", subdir = "sui/clmmpool/", rev = "mainnet" }
 
 [addresses]
-# strater_lp_vault = "0x0"
-strater_lp_vault = "0x8d1aee27f8537c06d19c16641f27008caafc42affd2d2fb7adb96919470481ec"
+strater_lp_vault = "0x0"
+# strater_lp_vault = "0x8d1aee27f8537c06d19c16641f27008caafc42affd2d2fb7adb96919470481ec"

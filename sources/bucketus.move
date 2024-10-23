@@ -265,6 +265,72 @@ module strater_lp_vault::bucketus {
         treasury.version = new_version;
     }
 
+    entry fun destroy_vault<A, B>(
+        _: &AdminCap,
+        _vault: CetusLpVault,
+        _config: &GlobalConfig,
+        _pool: &mut Pool<A, B>,
+        _rewarder: &mut RewarderGlobalVault,
+        _clock: &Clock,
+        _ctx: &mut TxContext,
+    ) {
+        abort 0
+    }
+
+    entry fun destroy_vault_<A, B, C>(
+        _: &AdminCap,
+        vault: CetusLpVault,
+        config: &GlobalConfig,
+        pool: &mut Pool<A, B>,
+        rewarder: &mut RewarderGlobalVault,
+        clock: &Clock,
+        ctx: &mut TxContext,
+    ) {
+        let CetusLpVault {
+            id,
+            // settings
+            position,
+            target_tick: _,
+            target_sqrt_price: _,
+            a_normalizer: _,
+            b_normalizer: _,
+            // status
+            bucketus_supply: _,
+        } = vault;
+        object::delete(id);
+        let sender = tx_context::sender(ctx);
+        let liquidity = position::liquidity(&position);
+        let reward = pool::collect_reward<A, B, C>(
+            config,
+            pool,
+            &position,
+            rewarder,
+            true,
+            clock,
+        );
+        let reward_coin = coin::from_balance(reward, ctx);
+        transfer::public_transfer(reward_coin, sender);
+        let (fee_a, fee_b) = pool::collect_fee(
+            config,
+            pool,
+            &position,
+            true,
+        );
+        if (liquidity > 0) {
+            let (
+                balance_a,
+                balance_b,
+            ) = pool::remove_liquidity(config, pool, &mut position, liquidity, clock);
+            balance::join(&mut fee_a, balance_a);
+            balance::join(&mut fee_b, balance_b);
+        };
+        let coin_a = coin::from_balance(fee_a, ctx);
+        let coin_b = coin::from_balance(fee_b, ctx);
+        transfer::public_transfer(coin_a, sender);
+        transfer::public_transfer(coin_b, sender);
+        pool::close_position(config, pool, position);
+    }
+
     // --------- Public Function ---------
 
     public fun deposit<A, B>(

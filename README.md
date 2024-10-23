@@ -14,7 +14,7 @@ sui move test -i 1000000000
 ### Public Objects
 Package ID
 ```
-0xc1da3fa69467f2fc6830b3a77ad83524dfc7bda67e9ded80b4007c736aca79a1
+0xd8796ceff421e530bcfcca93867facd424bc10ea6abaa03fe6d9edf69ee5aeae
 ```
 BucketusTreasury, initial_shared_version `61707529`
 ```
@@ -39,6 +39,14 @@ CetusLpVault (BUCK/USDC 0.05% small-range), initial_shared_version `97185407`
 CetusLpVault (BUCK/USDT 0.05% small-range), initial_shared_version `223924127`
 ```
 0x76a0349b67f4fd6ca9cd74202436bdde72d84003c59f0d492c1cfa87a81d4b6b
+```
+CetusLpVault (USDC/BUCK 0.01%), initial_shared_version `407172407`
+```
+0x6e0b0c324a46d297562120acdb7eabc4034046d90b3d7c763888a102b8e8d01d
+```
+CetusLpVault (BUCK/wUSDC 0.01%), initial_shared_version `407183915`,
+```
+0xe94a3bc4e33f240152b8e639dbca7f257f94a2111a8f3bedd584f254ad1d7080
 ```
 
 ### Owned Objects
