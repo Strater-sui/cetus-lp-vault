@@ -2,7 +2,7 @@
 
 [move]
 version = 3
-manifest_digest = "F7D83E0B62B1096A59A01B204047E690E6A425CDB33CFD94394B2E51A478E823"
+manifest_digest = "0F56880EDC1D3B966549D6BA9EF3B1AA132F78A77483CF8312345EAB30115159"
 deps_digest = "397E6A9F7A624706DBDFEE056CE88391A15876868FD18A88504DA74EB458D697"
 
 dependencies = [
@@ -25,7 +25,7 @@ dependencies = [
 
 [[move.package]]
 id = "CetusClmm"
-source = { git = "https://github.com/CetusProtocol/cetus-clmm-interface.git", rev = "mainnet", subdir = "sui/clmmpool/" }
+source = { git = "https://github.com/CetusProtocol/cetus-clmm-interface.git", rev = "mainnet-v1.26.0", subdir = "sui/cetus_clmm" }
 
 dependencies = [
   { id = "IntegerMate", name = "IntegerMate" },
