@@ -10,12 +10,13 @@ version = "0.0.7"
 # published-at = "0x8ba10ffa8a7d841247f475b63e456cf508ab32c0c0fe2f4817e6721bf932f8de"
 # published-at = "0x05f90d8547e9db0da98a52d2e6e54b3798c89d42cfe785ebcd1abf6c97d137c3"
 # published-at = "0xd8796ceff421e530bcfcca93867facd424bc10ea6abaa03fe6d9edf69ee5aeae"
-published-at = "0x8ee565f04a425b8de34bdccd64e3fa33a4526da99dde2a56044e277aeac7608e"
+# published-at = "0x8ee565f04a425b8de34bdccd64e3fa33a4526da99dde2a56044e277aeac7608e"
+published-at = "0xd737b93eec0002835fca3b65e0c8ebc76ea72251cc74a39bc72f90b77fa1fb9c"
 
 [dependencies]
 # Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "mainnet-v1.23.1" }
 CetusClmm = { git = "https://github.com/CetusProtocol/cetus-clmm-interface.git", subdir = "sui/clmmpool/", rev = "mainnet" }
 
 [addresses]
-# strater_lp_vault = "0x0"
-strater_lp_vault = "0x8d1aee27f8537c06d19c16641f27008caafc42affd2d2fb7adb96919470481ec"
+strater_lp_vault = "0x0"
+# strater_lp_vault = "0x8d1aee27f8537c06d19c16641f27008caafc42affd2d2fb7adb96919470481ec"
