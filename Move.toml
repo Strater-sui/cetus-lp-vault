@@ -18,5 +18,5 @@ published-at = "0xd737b93eec0002835fca3b65e0c8ebc76ea72251cc74a39bc72f90b77fa1fb
 CetusClmm = { git = "https://github.com/CetusProtocol/cetus-clmm-interface.git", subdir = "sui/clmmpool/", rev = "mainnet" }
 
 [addresses]
-strater_lp_vault = "0x0"
-# strater_lp_vault = "0x8d1aee27f8537c06d19c16641f27008caafc42affd2d2fb7adb96919470481ec"
+# strater_lp_vault = "0x0"
+strater_lp_vault = "0x8d1aee27f8537c06d19c16641f27008caafc42affd2d2fb7adb96919470481ec"
