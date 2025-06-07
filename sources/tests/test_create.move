@@ -5,8 +5,8 @@ module strater_lp_vault::test_create {
     use sui::test_scenario::{Self as ts, Scenario};
     use sui::clock::{Self, Clock};
     use sui::transfer;
-    use cetus_clmm::pool;
-    use cetus_clmm::config;
+    use cetusclmm::pool;
+    use cetusclmm::config;
     use strater_lp_vault::bucketus::{
         Self,
         BucketusTreasury,

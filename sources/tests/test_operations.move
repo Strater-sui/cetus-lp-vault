@@ -6,8 +6,8 @@ module strater_lp_vault::test_operations {
     use sui::transfer;
     use sui::balance;
     use sui::coin;
-    use cetus_clmm::pool::{Self, Pool};
-    use cetus_clmm::config::GlobalConfig;
+    use cetusclmm::pool::{Self, Pool};
+    use cetusclmm::config::GlobalConfig;
     use strater_lp_vault::bucketus::{
         Self,
         BUCKETUS,
@@ -112,7 +112,7 @@ module strater_lp_vault::test_operations {
             ts::return_shared(cetus_pool);
             ts::return_shared(clock);
         };
-        
+
         ts::end(scenario_val);
     }
 }

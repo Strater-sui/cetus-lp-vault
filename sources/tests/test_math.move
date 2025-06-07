@@ -1,7 +1,7 @@
 #[test_only]
 module strater_lp_vault::test_math {
 
-    use cetus_clmm::pool::get_amount_by_liquidity;
+    use cetusclmm::pool::get_amount_by_liquidity;
     use integer_mate::i32;
 
     // --------- Constants ---------

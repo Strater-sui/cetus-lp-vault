@@ -10,10 +10,10 @@ module strater_lp_vault::bucketus {
     use sui::clock::Clock;
     use sui::balance::{Self, Balance};
     use sui::event;
-    use cetus_clmm::position::{Self, Position};
-    use cetus_clmm::pool::{Self, Pool, AddLiquidityReceipt};
-    use cetus_clmm::config::GlobalConfig;
-    use cetus_clmm::rewarder::RewarderGlobalVault;
+    use cetusclmm::position::{Self, Position};
+    use cetusclmm::pool::{Self, Pool, AddLiquidityReceipt};
+    use cetusclmm::config::GlobalConfig;
+    use cetusclmm::rewarder::RewarderGlobalVault;
     use integer_mate::i32::{Self, I32};
     use integer_mate::full_math_u128;
 
@@ -28,7 +28,7 @@ module strater_lp_vault::bucketus {
     const EInvalidTickRange: u64 = 2;
 
     // --------- OTW ---------
-    
+
     struct BUCKETUS has drop {}
 
     // --------- Objects ---------
@@ -159,7 +159,7 @@ module strater_lp_vault::bucketus {
         };
         let vault_id = object::id(&vault);
         transfer::share_object(vault);
-        
+
         let pool_id = object::id(pool);
         event::emit(NewVault<A,B> {
             vault_id,
@@ -210,7 +210,7 @@ module strater_lp_vault::bucketus {
         clock: &Clock,
     ): Balance<C> {
         let cetus_position = &vault.position;
-        let reward = cetus_clmm::pool::collect_reward(
+        let reward = cetusclmm::pool::collect_reward(
             cetus_config,
             cetus_pool,
             cetus_position,
@@ -494,7 +494,7 @@ module strater_lp_vault::bucketus {
     // --------- Test-only Functions ---------
     #[test_only]
     use sui::test_utils::create_one_time_witness;
-    
+
     #[test_only]
     public fun init_for_testing(ctx: &mut TxContext) {
         init(create_one_time_witness<BUCKETUS>(), ctx);
